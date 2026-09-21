@@ -37,7 +37,7 @@ if (errors.length) {
 }
 
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
-await page.getByRole('button', { name: 'ตรวจสอบข้อมูล' }).first().click()
+await page.locator('.ref-service-card').filter({ hasText: 'ตรวจสอบข้อมูลคดี' }).getByRole('button').click()
 await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).last().click()
 await page.waitForURL('**/case-search')
 await page.getByRole('button', { name: 'ค้นหา', exact: true }).click()
@@ -58,7 +58,7 @@ await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
 await page.screenshot({ path: `${process.env.TEMP}/court-portal-desktop.png`, fullPage: true })
 await page.setViewportSize({ width: 390, height: 844 })
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
-await page.locator('.hero').waitFor()
+await page.locator('.ref-hero').waitFor()
 await page.screenshot({ path: `${process.env.TEMP}/court-portal-mobile.png`, fullPage: true })
 console.log(`mobile flow: viewport=${JSON.stringify(page.viewportSize())}`)
 
