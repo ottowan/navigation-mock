@@ -11,6 +11,7 @@
     "smoke": "node scripts/browser-smoke.mjs"
   },
   "dependencies": {
+    "@fontsource/sarabun": "^5.3.0",
     "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
     "clsx": "latest",
