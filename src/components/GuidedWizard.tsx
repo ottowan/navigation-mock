@@ -1,0 +1,14 @@
+import { ArrowLeft, ArrowRight, Check, Compass, RotateCcw } from 'lucide-react'
+import { useState } from 'react'
+import { ServiceCard } from './ServiceCard'
+import { services } from '../data/services'
+
+const intentions = ['ตรวจสอบคดี','ยื่นคำร้อง','ยื่นเอกสาร','ตรวจสอบวันนัด','ชำระค่าธรรมเนียม','ขอเอกสาร','ติดต่อศาล']
+const people = [{id:'citizen',label:'ประชาชนทั่วไป'},{id:'party',label:'คู่ความ'},{id:'lawyer',label:'ทนายความ'},{id:'officer',label:'เจ้าหน้าที่'}]
+const mapping:Record<string,string>={'ตรวจสอบคดี':'case-search','ยื่นคำร้อง':'online-request','ยื่นเอกสาร':'efile','ตรวจสอบวันนัด':'appointment','ชำระค่าธรรมเนียม':'court-fee','ขอเอกสาร':'document-copy','ติดต่อศาล':'court-finder'}
+export function GuidedWizard(){const [step,setStep]=useState(1);const [intention,setIntention]=useState('');const [person,setPerson]=useState('');const reset=()=>{setStep(1);setIntention('');setPerson('')};const result=services.find(s=>s.id===mapping[intention])||services[0]
+return <section className="guide-section" id="guide"><div className="container"><div className="guide-card"><div className="guide-intro"><span className="section-kicker"><Compass/> บริการแนะนำ</span><h2>ไม่แน่ใจว่าต้องใช้บริการไหน?</h2><p>ตอบคำถามสั้น ๆ เพียง 2 ขั้นตอน แล้วเราจะช่วยค้นหาบริการที่เหมาะกับคุณ</p><div className="stepper"><span className={step>=1?'on':''}>1</span><i className={step>=2?'on':''}></i><span className={step>=2?'on':''}>2</span><i className={step>=3?'on':''}></i><span className={step>=3?'on':''}>3</span></div></div><div className="guide-body">
+{step===1&&<><small>ขั้นตอนที่ 1 จาก 2</small><h3>วันนี้คุณต้องการทำอะไร?</h3><div className="choice-grid">{intentions.map(x=><button key={x} className={intention===x?'selected':''} onClick={()=>setIntention(x)}>{intention===x&&<Check/>}{x}</button>)}</div><button disabled={!intention} className="button primary next" onClick={()=>setStep(2)}>ถัดไป <ArrowRight/></button></>}
+{step===2&&<><small>ขั้นตอนที่ 2 จาก 2</small><h3>คุณเป็นใคร?</h3><div className="choice-grid">{people.map(x=><button key={x.id} className={person===x.id?'selected':''} onClick={()=>setPerson(x.id)}>{person===x.id&&<Check/>}{x.label}</button>)}</div><div className="wizard-actions"><button className="button ghost" onClick={()=>setStep(1)}><ArrowLeft/> ย้อนกลับ</button><button disabled={!person} className="button primary" onClick={()=>setStep(3)}>ดูบริการที่แนะนำ <ArrowRight/></button></div></>}
+{step===3&&<div className="wizard-result"><small>บริการที่เหมาะสมกับคุณ</small><h3>เราพบบริการที่ตรงกับความต้องการ</h3><ServiceCard service={result} compact/><div className="wizard-actions"><button className="button ghost" onClick={()=>setStep(2)}><ArrowLeft/> ย้อนกลับ</button><button className="button ghost" onClick={reset}><RotateCcw/> เริ่มใหม่</button></div></div>}
+</div></div></div></section>}
