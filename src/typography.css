@@ -8,10 +8,10 @@ body {
   line-height: 1.55;
 }
 
-.brand b { font-size: 22px; }
-.brand small { font-size: 13px; }
-.main-nav a { font-size: 18px; }
-.button { font-size: 16px; }
+.brand b { font-size: 20px; }
+.brand small { font-size: 12px; }
+.main-nav a { font-size: 16px; }
+.button { font-size: 15px; }
 .user-text { font-size: 13px; }
 .user-text b { font-size: 15px; }
 .eyebrow,
@@ -21,18 +21,18 @@ body {
 .detail-title p,
 .dashboard-hero p { font-size: 17px; }
 .popular { font-size: 14px; }
-.section-head h2 { font-size: 30px; }
+.section-head h2 { font-size: 28px; }
 .section-head p { font-size: 16px; }
 .section-head > a { font-size: 16px; }
 .audience-filters button { font-size: 15px; }
 .service-card { min-height: 285px; }
-.service-card h3 { font-size: 21px; }
-.service-card p { font-size: 16px; }
+.service-card h3 { font-size: 19px; }
+.service-card p { font-size: 15px; }
 .integration-badge { font-size: 12px; }
 .service-status { font-size: 13px; }
 .card-action { font-size: 16px; }
-.category-grid b { font-size: 17px; }
-.category-grid small { font-size: 13px; }
+.category-grid b { font-size: 16px; }
+.category-grid small { font-size: 12px; }
 .recent-list small,
 .activity-list small { font-size: 13px; }
 .choice-grid button { font-size: 16px; }
@@ -70,9 +70,9 @@ body {
 .footer-grid > div:not(:first-child) > b { font-size: 16px; }
 .footer-bottom { font-size: 12px; }
 
-.ref-hero { height: 340px; }
-.ref-hero-main h1 { font-size: 43px; }
-.ref-hero-main > p { font-size: 20px; }
+.ref-hero { height: 320px; }
+.ref-hero-main h1 { font-size: 38px; }
+.ref-hero-main > p { font-size: 18px; }
 .ref-search { height: 63px; }
 .ref-search input { font-size: 18px; }
 .ref-search button {
@@ -85,36 +85,36 @@ body {
 }
 .ref-hero blockquote { font-size: 25px; }
 .ref-hero blockquote small { font-size: 16px; }
-.ref-section-title h2 { font-size: 29px; }
-.ref-section-title a { font-size: 16px; }
+.ref-section-title h2 { font-size: 26px; }
+.ref-section-title a { font-size: 15px; }
 .ref-service-card {
-  min-height: 139px;
-  padding: 16px;
+  min-height: 128px;
+  padding: 15px;
 }
 .ref-service-info { grid-template-columns: 48px 1fr auto; }
 .ref-service-icon svg {
   width: 42px;
   height: 42px;
 }
-.ref-service-info h3 { font-size: 21px; }
+.ref-service-info h3 { font-size: 19px; }
 .ref-service-info p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.45;
 }
 .ref-service-card > button {
   height: 39px;
   font-size: 16px;
 }
-.ref-sidebar a b { font-size: 18px; }
-.ref-sidebar a small { font-size: 14px; }
-.ref-user div small { font-size: 16px; }
-.ref-user div b { font-size: 22px; }
-.ref-sidebar h3 { font-size: 21px; }
+.ref-sidebar a b { font-size: 16px; }
+.ref-sidebar a small { font-size: 12px; }
+.ref-user div small { font-size: 14px; }
+.ref-user div b { font-size: 20px; }
+.ref-sidebar h3 { font-size: 19px; }
 .ref-sidebar > a { padding: 10px 13px; }
-.ref-category-grid button { min-height: 100px; }
-.ref-category-grid b { font-size: 17px; }
-.ref-category-grid small { font-size: 13px; }
-.ref-notice .container { font-size: 15px; }
+.ref-category-grid button { min-height: 90px; }
+.ref-category-grid b { font-size: 16px; }
+.ref-category-grid small { font-size: 12px; }
+.ref-notice .container { font-size: 14px; }
 .reference-home .guide-intro h2 { font-size: 29px; }
 .reference-home .guide-intro p { font-size: 17px; }
 .reference-home .guide-body h3 { font-size: 24px; }
