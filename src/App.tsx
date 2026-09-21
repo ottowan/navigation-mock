@@ -11,6 +11,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { AdminPage } from './pages/AdminPage'
 import { ExternalPage } from './pages/ExternalPage'
 import { SsoPage } from './pages/SsoPage'
+import { DemoServicePage } from './pages/DemoServicePage'
 
 interface AppContextValue { user:User|null; login:(u:User)=>void; logout:()=>void; loginOpen:boolean; setLoginOpen:(v:boolean)=>void; pendingPath:string|null; requireLogin:(path:string)=>void }
 const AppContext = createContext<AppContextValue>(null!)
@@ -22,7 +23,7 @@ export function App(){
   const [pendingPath,setPendingPath] = useState<string|null>(null)
   const navigate = useNavigate()
   const location = useLocation()
-  useEffect(()=>window.scrollTo({top:0,behavior:'smooth'}),[location.pathname])
+  useEffect(()=>{ window.scrollTo({top:0,behavior:'smooth'}) },[location.pathname])
   const login=(u:User)=>{ storage.setUser(u); setUser(u); setLoginOpen(false); if(pendingPath){navigate(pendingPath);setPendingPath(null)} }
   const logout=()=>{storage.setUser(null);setUser(null);navigate('/')}
   const requireLogin=(path:string)=>{setPendingPath(path);setLoginOpen(true)}
@@ -38,6 +39,7 @@ export function App(){
         <Route path="/admin" element={user?.role==='officer'?<AdminPage/>:<Navigate to="/"/>}/>
         <Route path="/external/:id" element={<ExternalPage/>}/>
         <Route path="/sso/:id" element={user?<SsoPage/>:<Navigate to="/"/>}/>
+        <Route path="/demo/:id" element={<DemoServicePage/>}/>
         <Route path="*" element={<Navigate to="/"/>}/>
       </Route>
     </Routes>
