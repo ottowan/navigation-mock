@@ -1,7 +1,6 @@
 import { ArrowRight, Bell, BookOpenCheck, CalendarDays, CheckCircle2, ChevronRight, FileCheck2, Gavel, Search, ShieldCheck, Sparkles, UserRound, UsersRound } from 'lucide-react'
 import { FormEvent, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useApp } from '../App'
 import { GuidedWizard } from '../components/GuidedWizard'
 import { categories, getTargetSystem, services } from '../data/services'
 import type { Service } from '../types'
@@ -27,7 +26,6 @@ const heroServices = ['case-search', 'online-request', 'appointment', 'fees']
 
 export function HomePage() {
   const nav = useNavigate()
-  const { user, requireLogin } = useApp()
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
 
@@ -45,12 +43,7 @@ export function HomePage() {
 
   const openService = (service: Service) => {
     storage.addRecent(service.id)
-    if (service.authRequired && !user) {
-      requireLogin(service.url)
-      return
-    }
-    if (service.integrationType === 'Web Link') nav(`/external/${service.id}`)
-    else nav(service.url)
+    nav(`/service/${service.id}`)
   }
 
   return <div className="portal-home">

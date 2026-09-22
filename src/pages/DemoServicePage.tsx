@@ -1,9 +1,9 @@
 import { ArrowLeft, Building2, CalendarDays, CheckCircle2, Clock3, Download, FileCheck2, MapPin, Search, Send, ShieldCheck } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { DataAccessConsent } from '../components/DataAccessConsent'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { services } from '../data/services'
 import { mockCases, mockCourts, mockDocuments, mockRequests } from '../data/mockData'
+import { storage } from '../utils/storage'
 
 export function DemoServicePage() {
   const { id } = useParams()
@@ -11,15 +11,14 @@ export function DemoServicePage() {
   const [query, setQuery] = useState(id === 'court-finder' ? 'จังหวัดตัวอย่าง' : id === 'appointment' ? 'ผบ.1234/2569' : 'REQ-2569-001')
   const [searched, setSearched] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [consented, setConsented] = useState(false)
   const resultTitle = useMemo(() => id === 'court-finder' ? 'พบศาล 2 แห่ง' : id === 'appointment' ? 'พบนัดหมาย 2 รายการ' : id === 'receipt' ? 'พบใบเสร็จ 1 รายการ' : id === 'request-status' ? 'พบคำร้อง 1 รายการ' : 'ดำเนินการสำเร็จ', [id])
 
   if (!service) return <div className="container not-found"><h1>ไม่พบบริการ</h1></div>
+  if (!storage.hasServiceAccess(service.id)) return <Navigate to={`/service/${service.id}`} replace />
   const Icon = service.icon
   const searchMode = ['court-finder', 'court-directory', 'appointment', 'hearing-info', 'request-status', 'receipt', 'case-documents', 'court-guide', 'court-news'].includes(service.id)
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
-    if (!consented) return
     searchMode ? setSearched(true) : setSubmitted(true)
   }
 
@@ -36,20 +35,18 @@ export function DemoServicePage() {
             <div className="input-with-icon"><Search /><input value={query} onChange={event => setQuery(event.target.value)} required /></div>
           </label>
           {id === 'appointment' && <label>ปี พ.ศ.<select defaultValue="2569"><option>2569</option><option>2568</option></select></label>}
-          <DataAccessConsent service={service} accepted={consented} onAcceptedChange={setConsented} />
-          <button className="button primary wide" disabled={!consented}><Search /> ค้นหาข้อมูล</button>
+          <button className="button primary wide"><Search /> ค้นหาข้อมูล</button>
         </> : <>
           <label>เรื่อง<input defaultValue={service.name} /></label>
           <label>รายละเอียด<textarea defaultValue="ต้องการสอบถามรายละเอียดและขั้นตอนการดำเนินการเพิ่มเติม" /></label>
           <label>เอกสารประกอบ<div className="upload-box"><FileCheck2 /><span>คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวาง</span><small>PDF, JPG ไม่เกิน 10 MB</small></div></label>
-          <DataAccessConsent service={service} accepted={consented} onAcceptedChange={setConsented} />
-          <button className="button primary wide" disabled={!consented}><Send /> ยืนยันและส่งข้อมูล</button>
+          <button className="button primary wide"><Send /> ยืนยันและส่งข้อมูล</button>
         </>}
         <p className="privacy-note"><ShieldCheck /> ระบบนี้เป็นต้นแบบและไม่มีการส่งข้อมูลเข้าสู่ระบบจริง</p>
       </form>
 
       <section className="demo-results">
-        {!searched && !submitted && <div className="result-placeholder"><Icon /><h3>{searchMode ? 'ผลการค้นหาจะแสดงที่นี่' : 'พร้อมรับข้อมูลของคุณ'}</h3><p>{searchMode ? 'กรอกข้อมูลและอนุญาตการเข้าถึงก่อนค้นหา' : 'กรอกแบบฟอร์มและอนุญาตการเข้าถึงข้อมูล'}</p></div>}
+        {!searched && !submitted && <div className="result-placeholder"><Icon /><h3>{searchMode ? 'ผลการค้นหาจะแสดงที่นี่' : 'พร้อมรับข้อมูลของคุณ'}</h3><p>{searchMode ? 'กรอกข้อมูลแล้วกดค้นหา' : 'กรอกแบบฟอร์มด้านซ้ายให้ครบถ้วน'}</p></div>}
         {searched && <div className="mock-result-panel">
           <div className="result-panel-head"><CheckCircle2 /><div><small>ผลการค้นหา</small><h2>{resultTitle}</h2></div></div>
           {(id === 'court-finder' || id === 'court-directory') && mockCourts.map(court => <article className="court-result" key={court.name}><MapPin /><div><h3>{court.name}</h3><p>{court.address}</p><span>โทร. {court.phone}</span><span>{court.hours}</span></div><button className="button ghost">ดูแผนที่</button></article>)}
