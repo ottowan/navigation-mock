@@ -1,32 +1,174 @@
-import { ArrowRight, Bell, BriefcaseBusiness, CalendarDays, ChevronRight, Clock3, FileClock, FolderSearch2, Search, UserRound, UsersRound } from 'lucide-react'
+import { ArrowRight, Bell, BookOpenCheck, CalendarDays, CheckCircle2, ChevronRight, FileCheck2, Gavel, Search, ShieldCheck, Sparkles, UserRound, UsersRound } from 'lucide-react'
 import { FormEvent, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { GuidedWizard } from '../components/GuidedWizard'
-import { categories, services } from '../data/services'
+import { categories, getTargetSystem, services } from '../data/services'
 import type { Service } from '../types'
 import { storage } from '../utils/storage'
 
-const filters=[{id:'all',label:'ทั้งหมด',icon:null},{id:'citizen',label:'ประชาชนทั่วไป',icon:UsersRound},{id:'lawyer',label:'ทนายความ',icon:BriefcaseBusiness},{id:'officer',label:'เจ้าหน้าที่',icon:UserRound}]
-const typeClass:Record<string,string>={'API':'api','Web Link':'web','SSO':'sso','Internal':'internal'}
+const filters = [
+  { id: 'all', label: 'ทั้งหมด', icon: null },
+  { id: 'citizen', label: 'ประชาชนทั่วไป', icon: UsersRound },
+  { id: 'lawyer', label: 'ทนายความ', icon: BookOpenCheck },
+  { id: 'officer', label: 'เจ้าหน้าที่', icon: UserRound },
+]
 
-export function HomePage(){
-  const nav=useNavigate(); const {user,requireLogin}=useApp(); const [query,setQuery]=useState(''); const [filter,setFilter]=useState('all')
-  const featured=useMemo(()=>services.filter(s=>s.featured&&(filter==='all'||s.audience.includes(filter as never)||s.audience.includes('all'))).slice(0,6),[filter])
-  const submit=(e:FormEvent)=>{e.preventDefault();if(query.trim())nav(`/search?q=${encodeURIComponent(query.trim())}`)}
-  const openService=(service:Service)=>{storage.addRecent(service.id);if(service.authRequired&&!user){requireLogin(service.url);return}if(service.integrationType==='Web Link')nav(`/external/${service.id}`);else nav(service.url)}
-  const sideLinks=[
-    {label:'คดีของฉัน',detail:'ตรวจสอบสถานะคดีที่เกี่ยวข้อง',icon:FolderSearch2,to:user?'/dashboard':'/service/case-search'},
-    {label:'นัดหมายที่กำลังจะถึง',detail:'ดูนัดหมายและกำหนดการ',icon:CalendarDays,to:'/service/appointment'},
-    {label:'รายการล่าสุด',detail:'บริการที่คุณเข้าใช้ล่าสุด',icon:Clock3,to:user?'/dashboard':'/services'},
-    {label:'สถานะคำร้อง',detail:'ติดตามความคืบหน้าคำร้อง',icon:FileClock,to:'/service/request-status'},
-  ]
-  return <div className="reference-home">
-    <section className="ref-hero"><div className="ref-hero-photo"></div><div className="container ref-hero-content"><div className="ref-hero-main"><h1>วันนี้คุณต้องการทำอะไรเกี่ยวกับศาล?</h1><p>ค้นหาและเข้าถึงบริการออนไลน์ของศาลได้จากที่เดียว ทั้งบริการผ่านระบบ API และลิงก์เว็บไซต์</p><form className="ref-search" onSubmit={submit}><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="ค้นหา เช่น ตรวจสอบคดี / ยื่นคำร้อง / ชำระค่าธรรมเนียม / ขอเอกสาร"/><button>ค้นหา</button></form><div className="ref-filters">{filters.map(item=>{const Icon=item.icon;return <button key={item.id} className={filter===item.id?'active':''} onClick={()=>setFilter(item.id)}>{Icon&&<Icon/>}{item.label}</button>})}</div></div><blockquote>“ความยุติธรรม<br/>เข้าถึงได้สำหรับทุกคน”<i></i><small>สังคมยุติธรรม<br/>เริ่มได้จากการเข้าถึงข้อมูล</small></blockquote></div></section>
-    <section className="ref-content"><div className="container ref-main-grid"><div className="ref-services"><div className="ref-section-title"><h2>บริการที่ใช้บ่อย</h2><Link to="/services">ดูบริการทั้งหมด <ArrowRight/></Link></div>{featured.length?<div className="ref-service-grid">{featured.map(service=>{const Icon=service.icon;return <article className="ref-service-card" key={service.id}><div className="ref-service-info"><span className="ref-service-icon"><Icon/></span><div><h3>{service.name}</h3><p>{service.description}</p></div><span className={`integration-badge ${typeClass[service.integrationType]}`}>{service.integrationType}</span></div><button disabled={service.status!=='available'} onClick={()=>openService(service)}>{service.status==='maintenance'?'อยู่ระหว่างปรับปรุง':'เข้าสู่บริการ'}</button></article>})}</div>:<div className="empty">ไม่พบบริการสำหรับกลุ่มผู้ใช้นี้</div>}</div>
-      <aside className="ref-sidebar"><Link to={user?'/dashboard':'/'} onClick={e=>{if(!user){e.preventDefault();requireLogin('/dashboard')}}} className="ref-user"><span><UserRound/></span><div><small>สวัสดี</small><b>{user?`คุณ${user.name.split(' ')[0]}`:'ผู้ใช้งาน'}</b></div><ChevronRight/></Link><h3>บริการแนะนำ</h3>{sideLinks.map(item=><Link to={item.to} key={item.label}><item.icon/><span><b>{item.label}</b><small>{item.detail}</small></span><ChevronRight/></Link>)}</aside>
-    </div><div className="container ref-categories"><div className="ref-section-title"><h2>หมวดหมู่บริการ</h2></div><div className="ref-category-grid">{categories.slice(0,4).map(category=><button onClick={()=>nav(`/search?category=${encodeURIComponent(category.name)}`)} key={category.name}><category.icon/><span><b>{category.name}</b><small>{category.text}</small></span><ChevronRight/></button>)}<button onClick={()=>nav('/search?category=บริการสำหรับทนายความ')}><UsersRound/><span><b>บริการสำหรับทนายความ<br/>และเจ้าหน้าที่</b><small>บริการเฉพาะกลุ่ม แบบบูรณาการ</small></span><ChevronRight/></button></div></div></section>
-    <section className="ref-notice"><div className="container"><Bell/><span><b>ประกาศการให้บริการ</b> ระบบชำระค่าธรรมเนียมอยู่ระหว่างปรับปรุง กรุณาใช้บริการอีกครั้งหลัง 23:00 น.</span><Link to="/service/court-news">ดูประกาศทั้งหมด</Link></div></section>
-    <GuidedWizard/>
+const integrationClass: Record<string, string> = { API: 'api', 'Web Link': 'web', SSO: 'sso', Internal: 'internal' }
+
+const quickActions = [
+  { title: 'ค้นหา', text: 'ค้นหาคดี ศาล และข้อมูลที่ต้องการ', icon: Search, to: '/services' },
+  { title: 'ยื่น', text: 'ยื่นคำร้องและเอกสารผ่านช่องทางออนไลน์', icon: FileCheck2, to: '/service/online-request' },
+  { title: 'ติดตาม', text: 'ติดตามคดี คำร้อง และวันนัดหมาย', icon: CalendarDays, to: '/service/request-status' },
+  { title: 'ตรวจสอบ', text: 'ตรวจเอกสาร ประกาศ และข้อมูลจากศาล', icon: ShieldCheck, to: '/service/document-validation' },
+]
+
+const heroServices = ['case-search', 'online-request', 'appointment', 'fees']
+
+export function HomePage() {
+  const nav = useNavigate()
+  const { user, requireLogin } = useApp()
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('all')
+
+  const featured = useMemo(() => services
+    .filter(service => filter === 'all' || service.audience.includes(filter as never) || service.audience.includes('all'))
+    .sort((a, b) => Number(b.featured) - Number(a.featured))
+    .slice(0, 8), [filter])
+
+  const heroItems = heroServices.map(id => services.find(service => service.id === id)).filter(Boolean) as Service[]
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault()
+    if (query.trim()) nav(`/search?q=${encodeURIComponent(query.trim())}`)
+  }
+
+  const openService = (service: Service) => {
+    storage.addRecent(service.id)
+    if (service.authRequired && !user) {
+      requireLogin(service.url)
+      return
+    }
+    if (service.integrationType === 'Web Link') nav(`/external/${service.id}`)
+    else nav(service.url)
+  }
+
+  return <div className="portal-home">
+    <section className="portal-hero">
+      <div className="portal-orb portal-orb-one" />
+      <div className="portal-orb portal-orb-two" />
+      <div className="container portal-hero-grid">
+        <div className="portal-hero-copy">
+          <span className="portal-kicker"><Sparkles /> ศูนย์กลางบริการศาลยุติธรรม</span>
+          <h1>เรื่องศาล<br/><em>จัดการง่ายในที่เดียว</em></h1>
+          <p>ค้นหา ยื่น ติดตาม และตรวจสอบบริการของศาลได้จากจุดเดียว สะดวก ปลอดภัย และพร้อมใช้งานทุกที่</p>
+          <form className="portal-search" onSubmit={submit}>
+            <Search />
+            <input value={query} onChange={event => setQuery(event.target.value)} placeholder="ค้นหาบริการ เช่น ตรวจสอบคดี ค่าธรรมเนียม วันนัด" />
+            <button>ค้นหา</button>
+          </form>
+          <div className="portal-hero-actions">
+            <Link className="portal-primary-action" to="/services">ดูบริการทั้งหมด <ArrowRight /></Link>
+            <a className="portal-secondary-action" href="#service-guide">ช่วยฉันเลือกบริการ</a>
+          </div>
+        </div>
+
+        <div className="portal-showcase" aria-label="ตัวอย่างบริการออนไลน์">
+          <div className="portal-showcase-glow" />
+          <div className="portal-device">
+            <div className="portal-device-head">
+              <span><Gavel /></span>
+              <div><b>บริการศาลออนไลน์</b><small>เลือกบริการที่ต้องการ</small></div>
+              <Bell />
+            </div>
+            <div className="portal-device-search"><Search /> ค้นหาบริการ...</div>
+            <div className="portal-device-grid">
+              {heroItems.map(service => {
+                const Icon = service.icon
+                return <button key={service.id} onClick={() => openService(service)}>
+                  <span><Icon /></span><b>{service.name}</b>
+                </button>
+              })}
+            </div>
+            <div className="portal-device-safe"><ShieldCheck /> เชื่อมต่อบริการอย่างปลอดภัย</div>
+          </div>
+          <div className="portal-float-card portal-float-top"><CheckCircle2 /><span><b>พร้อมให้บริการ</b><small>ตลอด 24 ชั่วโมง</small></span></div>
+          <div className="portal-float-card portal-float-bottom"><UsersRound /><span><b>{services.length} บริการ</b><small>สำหรับทุกกลุ่มผู้ใช้</small></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section className="portal-intro">
+      <div className="container">
+        <p>เข้าถึงบริการของศาลยุติธรรมได้ทันที</p>
+        <h2>วันนี้คุณต้องการจัดการเรื่องใด?</h2>
+        <div className="portal-quick-grid">
+          {quickActions.map(item => <Link to={item.to} key={item.title}>
+            <span><item.icon /></span>
+            <div><h3>{item.title}</h3><p>{item.text}</p></div>
+            <ChevronRight />
+          </Link>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="portal-popular">
+      <div className="container">
+        <div className="portal-section-head">
+          <div><span>บริการสำหรับคุณ</span><h2>บริการยอดนิยม</h2><p>เลือกใช้บริการได้ตามบทบาทและสิ่งที่คุณต้องการดำเนินการ</p></div>
+          <Link to="/services">ดูบริการทั้งหมด <ArrowRight /></Link>
+        </div>
+        <div className="portal-filter-row">
+          {filters.map(item => {
+            const Icon = item.icon
+            return <button key={item.id} className={filter === item.id ? 'active' : ''} onClick={() => setFilter(item.id)}>
+              {Icon && <Icon />}{item.label}
+            </button>
+          })}
+        </div>
+        <div className="portal-service-grid">
+          {featured.map(service => {
+            const Icon = service.icon
+            return <article key={service.id}>
+              <div className="portal-card-top">
+                <span className="portal-card-icon"><Icon /></span>
+                <div className="portal-card-tags">
+                  <span className={`integration-badge ${integrationClass[service.integrationType]}`}>{service.integrationType}</span>
+                  <span className="target-system-badge">ปลายทาง · {getTargetSystem(service)}</span>
+                </div>
+              </div>
+              <h3>{service.name}</h3>
+              <p>{service.description}</p>
+              <button disabled={service.status !== 'available'} onClick={() => openService(service)}>
+                {service.status === 'available' ? service.action : 'อยู่ระหว่างปรับปรุง'} <ArrowRight />
+              </button>
+            </article>
+          })}
+        </div>
+      </div>
+    </section>
+
+    <section className="portal-categories">
+      <div className="container">
+        <div className="portal-section-head centered"><div><span>ค้นหาได้ง่ายกว่าเดิม</span><h2>บริการแยกตามหมวดหมู่</h2><p>เลือกจากประเภทงานเพื่อไปยังบริการที่ตรงกับความต้องการ</p></div></div>
+        <div className="portal-category-grid">
+          {categories.map(category => <button key={category.name} onClick={() => nav(`/search?category=${encodeURIComponent(category.name)}`)}>
+            <span><category.icon /></span>
+            <div><b>{category.name}</b><small>{category.text}</small></div>
+            <ChevronRight />
+          </button>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="portal-trust">
+      <div className="container">
+        <div><ShieldCheck /><span><b>ปลอดภัยและน่าเชื่อถือ</b><small>เชื่อมต่อระบบปลายทางของศาลอย่างชัดเจน</small></span></div>
+        <div><CheckCircle2 /><span><b>ข้อมูลบริการครบถ้วน</b><small>บอกขั้นตอนและเอกสารที่ควรเตรียม</small></span></div>
+        <div><UsersRound /><span><b>เข้าถึงง่ายสำหรับทุกคน</b><small>รองรับประชาชน ทนายความ และเจ้าหน้าที่</small></span></div>
+      </div>
+    </section>
+
+    <section id="service-guide" className="portal-guide-wrap"><GuidedWizard /></section>
   </div>
 }
