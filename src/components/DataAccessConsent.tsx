@@ -1,5 +1,4 @@
-import { BellRing, Check, Database, LockKeyhole } from 'lucide-react'
-import { useState } from 'react'
+import { Database, LockKeyhole } from 'lucide-react'
 import { useApp } from '../App'
 import { getTargetSystem } from '../data/services'
 import type { Service } from '../types'
@@ -10,7 +9,6 @@ interface DataAccessConsentProps {
 
 export function DataAccessConsent({ service }: DataAccessConsentProps) {
   const { user } = useApp()
-  const [notifications, setNotifications] = useState(true)
   const personalData = service.authRequired
     ? [
         ['ชื่อและนามสกุล', user?.name ?? 'ผู้ใช้บริการ'],
@@ -34,7 +32,7 @@ export function DataAccessConsent({ service }: DataAccessConsentProps) {
     <div className="data-access-head">
       <span><LockKeyhole /></span>
       <div>
-        <h3 id={`access-title-${service.id}`}>ข้อมูลที่ระบบปลายทางต้องการเข้าถึง</h3>
+        <h3 id={`access-title-${service.id}`}>ข้อมูลที่ต้องการเข้าถึง</h3>
         <p><Database /> {getTargetSystem(service)} จะได้รับเฉพาะข้อมูลที่แสดงด้านล่าง</p>
       </div>
     </div>
@@ -42,10 +40,6 @@ export function DataAccessConsent({ service }: DataAccessConsentProps) {
       {[...personalData, serviceData].map(([label, value]) => <div key={label}>
         <small>{label}</small><b>{value}</b>
       </div>)}
-    </div>
-    <div className="notification-permission">
-      <span><BellRing /><span><b>เปิดการแจ้งเตือน</b><small>รับแจ้งผลและสถานะรายการจากระบบปลายทาง</small></span></span>
-      <button type="button" role="switch" aria-checked={notifications} className={notifications ? 'on' : ''} onClick={() => setNotifications(value => !value)}><i>{notifications && <Check />}</i></button>
     </div>
   </section>
 }
