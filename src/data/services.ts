@@ -50,3 +50,18 @@ export const categories = [
 ]
 
 export const roleLabels = { guest:'ผู้เยี่ยมชม', citizen:'ประชาชน', lawyer:'ทนายความ', officer:'เจ้าหน้าที่ศาล' }
+
+const targetSystemByService: Record<string, string> = {
+  'case-search':'CIOS', 'online-request':'CIOS', appointment:'CIOS', 'document-copy':'CIOS',
+  'service-of-process':'CIOS', 'judgment-order':'CIOS', 'final-case-certificate':'CIOS',
+  'family-case-filing':'CIOS', 'labour-consultation':'CIOS', 'online-bail':'CIOS',
+  'welfare-protection':'CIOS', 'request-status':'CIOS', mediation:'CIOS',
+  fees:'FEES', 'court-fee':'Court Payment', receipt:'Court Payment',
+  'service-of-process-rate':'EXP', 'court-jurisdiction':'PUBDATA',
+  'citizen-efiling':'e-Filing', efile:'e-Filing', 'document-validation':'Validation COJ',
+  enotice:'e-Notice', 'court-finder':'Court Directory', 'court-directory':'Court Directory',
+  'officer-workspace':'Court SSO', 'my-cases':'Court SSO', 'admin-catalog':'Court Portal',
+  'officer-dashboard':'Court Portal',
+}
+
+export const getTargetSystem = (service: Service) => targetSystemByService[service.id] ?? 'Court Portal'
