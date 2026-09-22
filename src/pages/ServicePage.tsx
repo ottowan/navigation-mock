@@ -12,7 +12,6 @@ export function ServicePage() {
   const { user, requireLogin } = useApp()
   const service = services.find(item => item.id === id)
   const [favorite, setFavorite] = useState(() => service ? storage.favorites().includes(service.id) : false)
-  const [consented, setConsented] = useState(false)
   const [accessOpen, setAccessOpen] = useState(false)
 
   if (!service) return <div className="container not-found"><h1>ไม่พบบริการ</h1><Link to="/services">กลับไปบริการทั้งหมด</Link></div>
@@ -33,7 +32,6 @@ export function ServicePage() {
           ? service.url
           : `/demo/${service.id}`
   const go = () => {
-    if (!consented) return
     storage.addRecent(service.id)
     storage.grantServiceAccess(service.id)
     setAccessOpen(false)
@@ -41,7 +39,6 @@ export function ServicePage() {
     nav(destination)
   }
   const requestAccess = () => {
-    setConsented(false)
     setAccessOpen(true)
   }
 
@@ -79,8 +76,8 @@ export function ServicePage() {
     {accessOpen && <div className="modal-backdrop service-consent-backdrop" role="dialog" aria-modal="true" aria-labelledby="service-consent-title" onMouseDown={event => event.target === event.currentTarget && setAccessOpen(false)}>
       <div className="modal service-consent-modal">
         <div className="service-consent-title"><div><span className="eyebrow">ก่อนเชื่อมต่อระบบปลายทาง</span><h2 id="service-consent-title">อนุญาตการเข้าถึงข้อมูล</h2><p>ตรวจสอบข้อมูลสำหรับบริการ “{service.name}” ก่อนดำเนินการต่อ</p></div><button className="icon-button" onClick={() => setAccessOpen(false)} aria-label="ปิด"><X /></button></div>
-        <DataAccessConsent service={service} accepted={consented} onAcceptedChange={setConsented} />
-        <div className="service-consent-actions"><button className="button ghost" onClick={() => setAccessOpen(false)}>ยกเลิก</button><button className="button primary" disabled={!consented} onClick={go}>อนุญาตและดำเนินการต่อ <ArrowRight /></button></div>
+        <DataAccessConsent service={service} />
+        <div className="service-consent-actions"><button className="button ghost" onClick={() => setAccessOpen(false)}>ยกเลิก</button><button className="button primary" onClick={go}>อนุญาตและดำเนินการต่อ <ArrowRight /></button></div>
       </div>
     </div>}
   </div>

@@ -39,8 +39,6 @@ if (errors.length) {
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
 await page.locator('.portal-service-grid article').filter({ hasText: 'ตรวจสอบข้อมูลคดี' }).getByRole('button').click()
 await page.getByRole('button', { name: /ตรวจสอบข้อมูล/ }).last().click()
-if (!await page.getByRole('dialog').getByRole('button', { name: /อนุญาตและดำเนินการต่อ/ }).isDisabled()) throw new Error('consent action must be disabled before acceptance')
-await page.getByRole('dialog').getByRole('checkbox').check()
 await page.getByRole('dialog').getByRole('button', { name: /อนุญาตและดำเนินการต่อ/ }).click()
 await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).last().click()
 await page.waitForURL('**/case-search')
@@ -50,7 +48,6 @@ console.log(`case flow: ${await page.getByText('ผบ.1234/2569').count()} resu
 
 await page.goto(`${baseURL}/service/court-finder`, { waitUntil: 'domcontentloaded' })
 await page.getByRole('button', { name: /ค้นหาศาล/ }).last().click()
-await page.getByRole('dialog').getByRole('checkbox').check()
 await page.getByRole('dialog').getByRole('button', { name: /อนุญาตและดำเนินการต่อ/ }).click()
 await page.waitForURL('**/demo/court-finder')
 await page.getByRole('button', { name: 'ค้นหาข้อมูล' }).click()

@@ -6,11 +6,9 @@ import type { Service } from '../types'
 
 interface DataAccessConsentProps {
   service: Service
-  accepted: boolean
-  onAcceptedChange: (accepted: boolean) => void
 }
 
-export function DataAccessConsent({ service, accepted, onAcceptedChange }: DataAccessConsentProps) {
+export function DataAccessConsent({ service }: DataAccessConsentProps) {
   const { user } = useApp()
   const [notifications, setNotifications] = useState(true)
   const personalData = service.authRequired
@@ -49,9 +47,5 @@ export function DataAccessConsent({ service, accepted, onAcceptedChange }: DataA
       <span><BellRing /><span><b>เปิดการแจ้งเตือน</b><small>รับแจ้งผลและสถานะรายการจากระบบปลายทาง</small></span></span>
       <button type="button" role="switch" aria-checked={notifications} className={notifications ? 'on' : ''} onClick={() => setNotifications(value => !value)}><i>{notifications && <Check />}</i></button>
     </div>
-    <label className="data-consent-check">
-      <input type="checkbox" checked={accepted} onChange={event => onAcceptedChange(event.target.checked)} />
-      <span>ข้าพเจ้ายินยอมให้แพลตฟอร์มส่งข้อมูลข้างต้นไปยัง <b>{getTargetSystem(service)}</b> เพื่อให้บริการนี้</span>
-    </label>
   </section>
 }
