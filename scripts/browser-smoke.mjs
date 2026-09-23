@@ -17,7 +17,7 @@ page.on('console', message => {
 })
 page.on('pageerror', error => errors.push(`pageerror: ${error.message}`))
 
-const routes = ['/', '/services', '/search?q=คดี', '/service/case-search']
+const routes = ['/', '/services', '/popular', '/search?q=คดี', '/service/case-search']
 for (const route of routes) {
   console.log(`opening ${route}`)
   await page.goto(`${baseURL}${route}`, { waitUntil: 'domcontentloaded' })
@@ -35,6 +35,21 @@ if (errors.length) {
   await browser.close()
   process.exit(1)
 }
+
+await page.goto(`${baseURL}/services`, { waitUntil: 'domcontentloaded' })
+await page.locator('.service-filter-panel').getByLabel('ค้นหาบริการ').waitFor()
+if (await page.getByRole('heading', { name: 'บริการสำหรับประชาชน' }).count()) throw new Error('services hero should not be displayed')
+const publicServiceCount = await page.locator('.catalog-service-grid .service-card').count()
+if (publicServiceCount < 40) throw new Error(`expected a comprehensive public catalog, found ${publicServiceCount} services`)
+await page.getByRole('button', { name: /กฎหมายและคำพิพากษา/ }).click()
+await page.getByRole('heading', { name: 'กฎหมายและคำพิพากษา', exact: true }).last().waitFor()
+const legalServiceCount = await page.locator('.catalog-service-grid .service-card').count()
+if (legalServiceCount < 5) throw new Error(`expected legal research services, found ${legalServiceCount}`)
+await page.goto(`${baseURL}/popular`, { waitUntil: 'domcontentloaded' })
+const popularServiceCount = await page.locator('.popular-services-grid .service-card').count()
+if (popularServiceCount < 4) throw new Error(`expected popular services, found ${popularServiceCount}`)
+await page.screenshot({ path: `${process.env.TEMP}/court-popular-desktop.png`, fullPage: true })
+console.log(`services catalog: ${publicServiceCount} public services, ${popularServiceCount} popular services, ${legalServiceCount} legal services`)
 
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
 await page.locator('.portal-service-grid article').filter({ hasText: 'ตรวจสอบข้อมูลคดี' }).getByRole('button').click()
@@ -58,9 +73,19 @@ await page.getByText('คดีและคำร้องของฉัน').w
 console.log(`dashboard flow: ${await page.locator('.record-column').count()} record groups`)
 
 await page.setViewportSize({ width: 1440, height: 1000 })
+await page.goto(`${baseURL}/services`, { waitUntil: 'domcontentloaded' })
+await page.screenshot({ path: `${process.env.TEMP}/court-services-desktop.png`, fullPage: true })
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
 await page.screenshot({ path: `${process.env.TEMP}/court-portal-desktop.png`, fullPage: true })
 await page.setViewportSize({ width: 390, height: 844 })
+await page.goto(`${baseURL}/popular`, { waitUntil: 'domcontentloaded' })
+const popularMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+if (popularMobileOverflow) throw new Error('popular services page causes horizontal overflow on mobile')
+await page.screenshot({ path: `${process.env.TEMP}/court-popular-mobile.png`, fullPage: false })
+await page.goto(`${baseURL}/services`, { waitUntil: 'domcontentloaded' })
+const servicesMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+if (servicesMobileOverflow) throw new Error('services catalog causes horizontal overflow on mobile')
+await page.screenshot({ path: `${process.env.TEMP}/court-services-mobile.png`, fullPage: false })
 await page.goto(`${baseURL}/service/appointment`, { waitUntil: 'domcontentloaded' })
 await page.getByRole('heading', { name: 'ข้อมูลที่ต้องการเข้าถึง' }).waitFor()
 await page.locator('.mobile-service-action').getByRole('button', { name: /ตรวจสอบวันนัด/ }).waitFor()

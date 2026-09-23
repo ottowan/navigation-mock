@@ -12,6 +12,7 @@ import { AdminPage } from './pages/AdminPage'
 import { ExternalPage } from './pages/ExternalPage'
 import { SsoPage } from './pages/SsoPage'
 import { DemoServicePage } from './pages/DemoServicePage'
+import { PopularServicesPage } from './pages/PopularServicesPage'
 
 interface AppContextValue { user:User|null; login:(u:User)=>void; logout:()=>void; loginOpen:boolean; setLoginOpen:(v:boolean)=>void; pendingPath:string|null; requireLogin:(path:string)=>void }
 const AppContext = createContext<AppContextValue>(null!)
@@ -32,6 +33,7 @@ export function App(){
       <Route element={<Layout/>}>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/services" element={<SearchPage allServices/>}/>
+        <Route path="/popular" element={<PopularServicesPage/>}/>
         <Route path="/search" element={<SearchPage/>}/>
         <Route path="/service/:id" element={<ServicePage/>}/>
         <Route path="/case-search" element={<CaseSearchPage/>}/>

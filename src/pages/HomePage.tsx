@@ -127,7 +127,7 @@ export function HomePage() {
                 <span className="portal-card-icon"><Icon /></span>
                 <div className="portal-card-tags">
                   <span className={`integration-badge ${integrationClass[service.integrationType]}`}>{service.integrationType}</span>
-                  <span className="target-system-badge">ปลายทาง · {getTargetSystem(service)}</span>
+                  <span className="target-system-badge">{getTargetSystem(service)}</span>
                 </div>
               </div>
               <h3>{service.name}</h3>
@@ -156,7 +156,7 @@ export function HomePage() {
 
     <section className="portal-trust">
       <div className="container">
-        <div><ShieldCheck /><span><b>ปลอดภัยและน่าเชื่อถือ</b><small>เชื่อมต่อระบบปลายทางของศาลอย่างชัดเจน</small></span></div>
+        <div><ShieldCheck /><span><b>ปลอดภัยและน่าเชื่อถือ</b><small>แสดงระบบที่เชื่อมต่ออย่างชัดเจน</small></span></div>
         <div><CheckCircle2 /><span><b>ข้อมูลบริการครบถ้วน</b><small>บอกขั้นตอนและเอกสารที่ควรเตรียม</small></span></div>
         <div><UsersRound /><span><b>เข้าถึงง่ายสำหรับทุกคน</b><small>รองรับประชาชน ทนายความ และเจ้าหน้าที่</small></span></div>
       </div>

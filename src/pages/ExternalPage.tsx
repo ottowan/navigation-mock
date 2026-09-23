@@ -17,10 +17,10 @@ export function ExternalPage() {
   return <div className="external-page"><div className="external-card access-external-card">
     {!continued ? <>
       <span className="external-icon"><ExternalLink /></span>
-      <span className="eyebrow">กำลังเชื่อมต่อระบบปลายทาง</span>
+      <span className="eyebrow">กำลังเชื่อมต่อระบบบริการ</span>
       <h1>ส่งต่อไปยัง {getTargetSystem(service)}</h1>
-      <p>คุณอนุญาตข้อมูลสำหรับบริการ “{service.name}” แล้ว พร้อมส่งต่อไปยังระบบปลายทาง</p>
-      <div className="external-info"><span>ชื่อบริการ</span><b>{service.name}</b><span>ระบบปลายทาง</span><b>{getTargetSystem(service)}</b></div>
+      <p>คุณอนุญาตข้อมูลสำหรับบริการ “{service.name}” แล้ว พร้อมส่งต่อไปยังระบบที่เชื่อมต่อ</p>
+      <div className="external-info"><span>ชื่อบริการ</span><b>{service.name}</b><span>ระบบที่เชื่อมต่อ</span><b>{getTargetSystem(service)}</b></div>
       <div className="external-actions"><Link className="button ghost" to={`/service/${service.id}`}><ArrowLeft /> ยกเลิก</Link><button className="button primary" onClick={() => setContinued(true)}>ดำเนินการต่อ <ArrowRight /></button></div>
     </> : <>
       <span className="external-icon success"><ShieldCheck /></span>
